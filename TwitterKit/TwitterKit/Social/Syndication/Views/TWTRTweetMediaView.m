@@ -18,7 +18,6 @@
 #import "TWTRTweetMediaView.h"
 #import <TwitterCore/TWTRAssertionMacros.h>
 #import <TwitterCore/TWTRColorUtil.h>
-#import <TwitterCore/TWTRResourcesUtil.h>
 #import <TwitterCore/TWTRUtils.h>
 #import "TWTRImageViewController.h"
 #import "TWTRMediaEntityDisplayConfiguration.h"
@@ -26,6 +25,7 @@
 #import "TWTRMultiPhotoLayout.h"
 #import "TWTRPlayIcon.h"
 #import "TWTRPlayerCardEntity.h"
+#import "TWTRResourcesUtil.h"
 #import "TWTRTranslationsUtil.h"
 #import "TWTRTweet.h"
 #import "TWTRTweetImageView.h"

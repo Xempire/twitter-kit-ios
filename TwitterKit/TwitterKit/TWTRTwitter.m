@@ -27,7 +27,6 @@
 #import <TwitterCore/TWTRMultiThreadUtil.h>
 #import <TwitterCore/TWTRNetworkingConstants.h>
 #import <TwitterCore/TWTRNetworkingPipeline.h>
-#import <TwitterCore/TWTRResourcesUtil.h>
 #import <TwitterCore/TWTRSessionRefreshStrategy.h>
 #import <TwitterCore/TWTRSessionStore.h>
 #import <TwitterCore/TWTRSessionStore_Private.h>
@@ -43,6 +42,7 @@
 #import "TWTRMobileSSO.h"
 #import "TWTRNotificationConstants.h"
 #import "TWTRPersistentStore.h"
+#import "TWTRResourcesUtil.h"
 #import "TWTRRuntime.h"
 #import "TWTRSessionMigrator.h"
 #import "TWTRSystemAccountSerializer.h"
