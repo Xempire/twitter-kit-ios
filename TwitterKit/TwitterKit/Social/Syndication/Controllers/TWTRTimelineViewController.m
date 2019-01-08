@@ -20,8 +20,6 @@
 #import <TwitterCore/TWTRSessionStore.h>
 #import "TWTRCollectionTimelineDataSource.h"
 #import "TWTRNotificationConstants.h"
-#import "TWTRTableViewAdPlacer.h"
-#import "TWTRTableViewProxy.h"
 #import "TWTRTimelineCursor.h"
 #import "TWTRTimelineDataSource.h"
 #import "TWTRTimelineDelegate.h"
@@ -43,13 +41,8 @@ static CGFloat const TWTREstimatedRowHeight = 150;
 @property (nonatomic) NSMutableArray *tweets;
 @property (nonatomic) UIColor *defaultBackgroundColor;
 @property (nonatomic, readonly) NSArray *tweetNotificationObservers;
-@property (nonatomic) TWTRTableViewAdPlacer *adPlacer;
 @property (nonatomic) TWTRTimelineMessageView *messageView;
 
-/**
- *  Proxy object that isolates logic behind checking for MoPub methods need to be called on the
- *  `tableView`.
- */
 @property (nonatomic) id tableViewProxy;
 
 @end
@@ -58,30 +51,17 @@ static CGFloat const TWTREstimatedRowHeight = 150;
 
 #pragma mark - TWTRTimelineViewController Init
 
-- (void)commonInitWithDataSource:(id<TWTRTimelineDataSource>)dataSource adConfiguration:(TWTRMoPubAdConfiguration *)adConfiguration
+- (void)commonInitWithDataSource:(id<TWTRTimelineDataSource>)dataSource
 {
-    // Wrappers that optionally set up MoPub if possible and opted-in
-    _adConfiguration = adConfiguration;
     _dataSource = dataSource;
     _showTweetActions = NO;
     _tweets = [NSMutableArray array];
-
-    [self configureAdPlacer];
 }
 
 - (instancetype)initWithDataSource:(id<TWTRTimelineDataSource>)dataSource
 {
     if (self = [super initWithNibName:nil bundle:nil]) {
-        [self commonInitWithDataSource:dataSource adConfiguration:nil];
-        _defaultBackgroundColor = [UIColor lightGrayColor];
-    }
-    return self;
-}
-
-- (instancetype)initWithDataSource:(id<TWTRTimelineDataSource>)dataSource adConfiguration:(TWTRMoPubAdConfiguration *)adConfiguration
-{
-    if (self = [super initWithNibName:nil bundle:nil]) {
-        [self commonInitWithDataSource:dataSource adConfiguration:adConfiguration];
+        [self commonInitWithDataSource:dataSource];
         _defaultBackgroundColor = [UIColor lightGrayColor];
     }
     return self;
@@ -103,7 +83,7 @@ static CGFloat const TWTREstimatedRowHeight = 150;
 {
     self = [super initWithCoder:aDecoder];
     if (self) {
-        [self commonInitWithDataSource:nil adConfiguration:nil];
+        [self commonInitWithDataSource:nil];
         _defaultBackgroundColor = nil;
     }
     return self;
@@ -114,12 +94,6 @@ static CGFloat const TWTREstimatedRowHeight = 150;
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-
-    // See https://dev.twitter.com/mopub/ios/native for add additional methods
-    NSArray *tableViewSelectorsToProxy = @[@"reloadData", @"dequeueReusableCellWithIdentifier:forIndexPath:"];
-    TWTRTableViewProxy *proxy = [[TWTRTableViewProxy alloc] initWithTableView:self.tableView selectorsToProxy:tableViewSelectorsToProxy];
-    proxy.enabled = _adConfiguration ? YES : NO;
-    _tableViewProxy = proxy;
 
     // Setup tableview
     self.tableView.estimatedRowHeight = TWTREstimatedRowHeight;
@@ -163,8 +137,6 @@ static CGFloat const TWTREstimatedRowHeight = 150;
         }
     }
     [self loadNewestTweets];
-
-    [self.adPlacer loadAdUnitIfConfigured];
 }
 
 - (void)dealloc
@@ -356,36 +328,6 @@ static CGFloat const TWTREstimatedRowHeight = 150;
                                                    [self.messageView endLoadingWithMessage:TWTRLocalizedString(@"tw__empty_timeline")];
                                                }
                                            }];
-}
-
-#pragma mark - MoPub Helpers
-
-/**
- *  Updates the `adConfiguration` and perform ad request to load ads.
- *  @warning This method can only be invoked once or a bug within MoPub SDK will cause it to crash.
- *
- *  @param adConfiguration The ad configuration to render ads with
- */
-- (void)setAdConfiguration:(TWTRMoPubAdConfiguration *)adConfiguration
-{
-    if (_adConfiguration == nil) {
-        _adConfiguration = adConfiguration;
-
-        ((TWTRTableViewProxy *)self.tableViewProxy).enabled = adConfiguration ? YES : NO;
-
-        [self configureAdPlacer];
-        [self.adPlacer loadAdUnitIfConfigured];
-        [self.tableViewProxy reloadData];
-    }
-}
-
-- (void)configureAdPlacer
-{
-    if (_adConfiguration) {
-        _adPlacer = [[TWTRTableViewAdPlacer alloc] initWithTableView:self.tableView viewController:self adConfiguration:_adConfiguration];
-    } else {
-        _adPlacer = nil;
-    }
 }
 
 @end
