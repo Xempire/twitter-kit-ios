@@ -74,6 +74,24 @@
     return [sourceApplication hasPrefix:@"com.apple"] || [sourceApplication isEqualToString:bundleID];
 }
 
+- (BOOL)isSSOWithURL:(NSURL *)url
+{
+    if (url != nil) {
+        return [url.host containsString:@"secret="] && [url.host containsString:@"token="] && [url.host containsString:@"username="];
+    } else {
+        return NO;
+    }
+}
+
+- (BOOL)isWebWithURL:(NSURL *)url
+{
+    if (url != nil) {
+        return [url.host isEqualToString:@"callback"];
+    } else {
+        return NO;
+    }
+}
+
 - (void)triggerInvalidSourceError
 {
     dispatch_async(dispatch_get_main_queue(), ^{
