@@ -49,7 +49,7 @@ typedef void (^TWTRMobileSSOCompletion)(BOOL twitterAppInstalled);
 - (BOOL)processRedirectURL:(NSURL *)url;
 
 /**
- *  Determines if the source application sent from the calling applciation is valid.
+ *  Determines if the source application sent from the calling application is valid.
  *
  *  Returns YES if the source application is Twitter sanctioned, NO otherwise.
  */
