@@ -33,7 +33,7 @@ typedef void (^TWTRWebAuthenticationViewControllerCompletion)(TWTRSession *_Null
 @property (nonatomic, copy) TWTRWebAuthenticationViewControllerCompletion completion;
 
 /*
- *  Initialize either a WebViewController or SFSafariViewController based on existing session in TWTRSessionStore.
+ *  Initialize an SFSafariViewController based on existing session in TWTRSessionStore.
  */
 - (instancetype)initWithAuthenticationToken:(NSString *)token authConfig:(TWTRAuthConfig *)authConfig APIServiceConfig:(id<TWTRAPIServiceConfig>)serviceConfig hasExistingSession:(BOOL)hasExistingSession;
 

@@ -29,7 +29,6 @@
 #import "TWTRErrors.h"
 #import "TWTRLoginURLParser.h"
 #import "TWTRTwitter_Private.h"
-#import "TWTRWebViewController.h"
 
 @interface TWTRWebAuthenticationViewController () <SFSafariViewControllerDelegate>
 
@@ -78,12 +77,8 @@
 
 - (UIViewController *)webController
 {
-    if (_useWebFlow) {
-        return [self webViewController];
-    } else {
-        [self.navigationController setNavigationBarHidden:YES];
-        return [self safariViewController];
-    }
+    [self.navigationController setNavigationBarHidden:YES];
+    return [self safariViewController];
 }
 
 - (SFSafariViewController *)safariViewController
@@ -91,27 +86,6 @@
     SFSafariViewController *safariVC = [[SFSafariViewController alloc] initWithURL:self.authURL];
     safariVC.delegate = self;
     return safariVC;
-}
-
-- (TWTRWebViewController *)webViewController
-{
-    TWTRWebViewController *webVC = [[TWTRWebViewController alloc] init];
-    webVC.request = [NSURLRequest requestWithURL:self.authURL];
-
-    @weakify(self) webVC.errorHandler = ^(NSError *error) {
-        @strongify(self)[self failWithError:error];
-    };
-
-    webVC.shouldStartLoadWithRequest = ^BOOL(UIViewController *controller, NSURLRequest *request, UIWebViewNavigationType navType) {
-        @strongify(self) NSURL *URL = request.URL;
-        if ([TWTRSDKScheme isEqualToString:URL.scheme] && [TWTRSDKRedirectHost isEqualToString:URL.host]) {
-            [self handleTwitterRedirectRequest:request];
-            return NO;
-        }
-        return YES;
-    };
-
-    return webVC;
 }
 
 - (void)embedViewController:(UIViewController *)controller

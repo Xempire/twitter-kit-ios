@@ -26,7 +26,6 @@
 #import "TWTRTwitter.h"
 #import "TWTRTwitter_Private.h"
 #import "TWTRWebAuthenticationViewController.h"
-#import "TWTRWebViewController.h"
 
 @interface TWTRWebAuthenticationViewControllerTests : XCTestCase
 
@@ -82,15 +81,6 @@
 }
 
 #pragma mark - Embedded View Controllers
-
-- (void)testEmbededViewController_isWebViewController
-{
-    self.controller = [[TWTRWebAuthenticationViewController alloc] initWithAuthenticationToken:@"token23" authConfig:self.sessionStore.authConfig APIServiceConfig:self.sessionStore.APIServiceConfig hasExistingSession:YES];
-    [self.controller view];
-
-    UIViewController *embeddedViewController = [[self.controller childViewControllers] firstObject];
-    XCTAssertEqual([embeddedViewController class], [TWTRWebViewController class]);
-}
 
 - (void)testEmbededViewController_isSafariViewController
 {
